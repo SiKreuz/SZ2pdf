@@ -1,0 +1,5 @@
+build/
+SZ2pdf.egg-info/
+venv/
+.idea/
+__pycache__/
