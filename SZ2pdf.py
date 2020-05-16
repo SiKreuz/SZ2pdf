@@ -1,57 +1,30 @@
-import configparser
 import re
 from datetime import datetime
-from pathlib import Path
 
-import appdirs
-import click
 import mechanize
 
-# load config
-CONFIG_DIR = appdirs.user_config_dir('SZ2pdf')
-if not Path(CONFIG_DIR + '/config').exists():
-    # create config file
-    Path(CONFIG_DIR).mkdir(parents=True, exist_ok=True)
-    config = configparser.RawConfigParser()
-    config.set('DEFAULT', 'username', '')
-    config.set('DEFAULT', 'password', '')
-    config.set('DEFAULT', 'download_dir', str(Path.home()) + '/SZ2pdf_Downloads')
-    if not Path(CONFIG_DIR + '/config').exists():
-        with open(CONFIG_DIR + '/config', 'w+') as config_file:
-            config.write(config_file)
-
-# load existing config
-config = configparser.ConfigParser()
-config.read(CONFIG_DIR + '/config')
+import conf_utils
+from output_utils import e_print
 
 # URLs
 LOGIN_URL = 'https://epaper.sueddeutsche.de/login'
 E_PAPER_URL = 'https://epaper.sueddeutsche.de/Stadtausgabe'
 DOWNLOAD_URL_PREFIX = 'https://epaper.sueddeutsche.de/download/'
 
-
-def create_download_directory():
-    Path(config.get('DEFAULT', 'download_dir')).mkdir(parents=True, exist_ok=True)
-
-
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
-@click.command(context_settings=CONTEXT_SETTINGS)
-@click.option('--show-config-dir', '-cd', is_flag=True, help='Prints the path of the config directory.')
-def cli(show_config_dir):
-    # Show path of config dir
-    if show_config_dir:
-        print('Your config file is located in ' + CONFIG_DIR)
-        exit(0)
+def cli():
+    sz_credentials = conf_utils.get_sz_credentials()
+
+    br = mechanize.Browser()
 
     # login
     print('Logging in...')
-    br = mechanize.Browser()
     br.open(LOGIN_URL)
     br.select_form(nr=0)
-    br.form['login'] = config.get('DEFAULT', 'username')
-    br.form['password'] = config.get('DEFAULT', 'password')
+    br.form['login'] = sz_credentials[0]
+    br.form['password'] = sz_credentials[1]
     br.submit()
 
     # look for current newspaper
@@ -61,16 +34,17 @@ def cli(show_config_dir):
         download_link = br.find_link(url_regex=re.compile('/webreader/\d{6}'))
         print('Login successful.')
     except mechanize.LinkNotFoundError:
-        print('Login failed.')
+        e_print('Login failed. Please check your login credentials at ' + conf_utils.CONFIG_FILE_PATH + '.')
         exit(1)
 
     download_url = re.sub('/webreader/', DOWNLOAD_URL_PREFIX, download_link.url)
 
     # download pdf
     print('Downloading current newspaper from ' + download_url)
-    create_download_directory()
-    file_name = datetime.now().strftime(config.get('DEFAULT', 'download_dir') + '/%Y_%m_%d_SZ.pdf')
-    file_path = br.retrieve(download_url, file_name)[0]
+    file_path_regex = datetime.now().strftime(conf_utils.get_download_path() + '/%Y_%m_%d_SZ.pdf')
+    file_path = br.retrieve(download_url, file_path_regex)[0]
+
+    br.close()
 
     print('Saved to ' + file_path + '.')
 
