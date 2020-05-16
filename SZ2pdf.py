@@ -1,10 +1,11 @@
 import configparser
-import appdirs
 import re
-import mechanize
-import click
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
+import appdirs
+import click
+import mechanize
 
 # load config
 CONFIG_DIR = appdirs.user_config_dir('SZ2pdf')
@@ -53,7 +54,7 @@ def cli(show_config_dir):
     br.form['password'] = config.get('DEFAULT', 'password')
     br.submit()
 
-    # look for newest paper
+    # look for current newspaper
     br.open(E_PAPER_URL)
     download_link = None
     try:
@@ -66,7 +67,7 @@ def cli(show_config_dir):
     download_url = re.sub('/webreader/', DOWNLOAD_URL_PREFIX, download_link.url)
 
     # download pdf
-    print('Downloading newest paper from ' + download_url)
+    print('Downloading current newspaper from ' + download_url)
     create_download_directory()
     file_name = datetime.now().strftime(config.get('DEFAULT', 'download_dir') + '/%Y_%m_%d_SZ.pdf')
     file_path = br.retrieve(download_url, file_name)[0]

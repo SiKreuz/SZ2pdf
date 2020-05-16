@@ -10,7 +10,8 @@ setup(
     license='MIT',
     author='Simon Kreuzer',
     author_email='mail@monsi.org',
-    description='This tool downloads the newest paper as pdf from the SZ using your login credentials.',
+    description='This tool downloads the current newspaper as pdf from the "Sueddeutsche Zeitung" using your login '
+                'credentials.',
 
     python_requires='>=3.5',
     entry_points='''
