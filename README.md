@@ -15,4 +15,20 @@ Zum Updaten der Software muss die Option `-U` verwendet werden. Für eine system
 
 ## Konfiguration
 Der Konfigurationsordner liegt in dem für das Betriebssystem typischen Ordner. Unter Linux wäre das `~/.config/SZ2pdf`.
-Dort musst du deine Logindaten angeben und kannst den Download-Ordner festlegen.
+Dort musst du deine Logindaten angeben und kannst den Download-Ordner festlegen und die Version der Zeitung angeben, die du gerne hättest.
+
+Folgende Versionen der Zeitung können angegeben werden (bitte Großschreibung beachten):
+- Starnberg
+- Wolfratshausen
+- Dachau
+- Fürstenfeldbruck
+- Erding
+- Freising
+- Ebersberg
+- München LK Nord
+- München LK Süd
+- München Ost
+- München West
+- München Süd
+- Stadtausgabe (Standard)
+- Fernausgabe

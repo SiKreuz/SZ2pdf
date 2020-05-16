@@ -17,6 +17,7 @@ SZ_SECTION = 'SZ'
 SZ_LOGIN_USERNAME = 'username'
 SZ_LOGIN_PASSWORD = 'password'
 SZ_DOWNLOAD_DIR = 'download_dir'
+SZ_EDITION = 'edition'
 
 # create config directory if not already existing
 if not Path(CONFIG_FILE_PATH).exists():
@@ -36,7 +37,16 @@ def setup_sz_login():
     config.add_section(SZ_SECTION)
     config.set(SZ_SECTION, SZ_LOGIN_USERNAME, '')
     config.set(SZ_SECTION, SZ_LOGIN_PASSWORD, '')
+    save_config()
+
+
+def setup_download_dir():
     config.set(SZ_SECTION, SZ_DOWNLOAD_DIR, STANDARD_DOWNLOAD_PATH)
+    save_config()
+
+
+def setup_sz_section():
+    config.set(SZ_SECTION, SZ_EDITION, 'Stadtausgabe')
     save_config()
 
 
@@ -52,6 +62,7 @@ def get_sz_credentials():
 
 
 def get_download_path():
+    setup_download_dir()
     if config.has_option(SZ_SECTION, SZ_DOWNLOAD_DIR):
         download_path = config.get(SZ_SECTION, SZ_DOWNLOAD_DIR)
         Path(download_path).mkdir(parents=True, exist_ok=True)
@@ -59,3 +70,9 @@ def get_download_path():
     else:
         setup_sz_login()
         return get_download_path()
+
+
+def get_edition():
+    if not config.has_option(SZ_SECTION, SZ_EDITION):
+        setup_sz_section()
+    return config.get(SZ_SECTION, SZ_EDITION)
