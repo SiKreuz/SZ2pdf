@@ -36,27 +36,28 @@ def cli(edition, username, password, download_dir):
     br.form['password'] = password
     br.submit()
 
-    # look for current newspaper
+    # login validation
+    if 'E-Mail-Adresse oder Passwort sind nicht korrekt.' in br.response().read().decode('utf-8'):
+        e_print('Login failed. Please check your login credentials.')
+        exit(1)
+    else:
+        print('Login successful.')
+
+    # open selected edition
     try:
         br.open(E_PAPER_URL + edition)
     except mechanize.HTTPError:
         e_print('Invalid edition. Please enter a valid edition.')
         exit(1)
 
-    download_link = None
-    try:
-        download_link = br.find_link(url_regex=re.compile('/webreader/\d{6}'))
-        print('Login successful.')
-    except mechanize.LinkNotFoundError:
-        e_print('Login failed. Please check your login credentials at ' + conf_utils.CONFIG_FILE_PATH)
-        exit(1)
-
+    # crawling for download_url
+    download_link = br.find_link(url_regex=re.compile('/webreader/\d{6}'))
     download_url = re.sub('/webreader/', DOWNLOAD_URL_PREFIX, download_link.url)
 
     # download pdf
     print('Downloading "' + edition + '" of the current newspaper from ' + download_url)
     file_path_regex = datetime.now().strftime(
-        download_dir + '/%Y_%m_%d_SZ-' + edition + '.pdf')
+        click.format_filename(download_dir) + '/%Y_%m_%d_SZ-' + edition + '.pdf')
     file_path = br.retrieve(download_url, file_path_regex)[0]
 
     br.close()
