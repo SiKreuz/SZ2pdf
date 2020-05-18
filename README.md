@@ -7,16 +7,39 @@ Zwingend erforderlich ist dafür natürlich ein Account und Abo bei der Süddeut
 
 ## Installation
 Mit `pip` installieren:
-```shell script
+```commandline
 pip install git+https://github.com/SiKreuz/SZ2pdf
 ```
 
 Zum Updaten der Software muss die Option `-U` verwendet werden. Für eine systemweite Installation sind root-Rechte nötig.
 
 ## Konfiguration
-Der Konfigurationsordner liegt in dem für das Betriebssystem typischen Ordner. Unter Linux wäre das `~/.config/SZ2pdf`.
-Dort musst du deine Logindaten angeben und kannst den Download-Ordner festlegen und die Version der Zeitung angeben, die du gerne hättest.
+Alle wichtigen Parameter können entweder über die Kommandozeile übergeben werden, oder in der Konfigurationsdatei festgelegt werden.
 
+### Kommandozeile
+```text
+Usage: SZ2pdf [OPTIONS]
+
+Options:
+  -u, --username TEXT      Username for login
+  -p, --password TEXT      Password for login
+  -e, --edition TEXT       Specifies the edition
+  -d, --download-dir PATH  Download directory
+  -h, --help               Show this message and exit.
+```
+
+### Konfigurationsdatei
+Die Konfigurationsdatei liegt in dem für das Betriebssystem typischen Ordner. Unter Linux wäre das `~/.config/SZ2pdf/config`. Standardmäßig werden die folgenden Konfigurationen geschrieben:
+
+```ini
+[SZ]
+username = 
+password = 
+edition = Stadtausgabe
+download_dir = <home-dir>/SZ2pdf_Downloads
+```
+
+### Mögliche Editionen der SZ
 Folgende Versionen der Zeitung können angegeben werden (bitte Großschreibung beachten):
 - Starnberg
 - Wolfratshausen
