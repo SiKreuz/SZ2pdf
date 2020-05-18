@@ -16,11 +16,15 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.option('--edition', '-e', help='Specifies the edition to be downloaded.')
-def cli(edition):
-    sz_credentials = conf_utils.get_sz_credentials()
-    if not edition:
-        edition = conf_utils.get_edition()
+@click.option('--username', '-u', default=conf_utils.get_username(), help='Username for login')
+@click.option('--password', '-p', default=conf_utils.get_password(), help='Password for login')
+@click.option('--edition', '-e', default=conf_utils.get_edition(), help='Specifies the edition')
+@click.option('--download-dir', '-d', default=conf_utils.get_download_path(),
+              type=click.Path(exists=True, resolve_path=True), help='Download directory')
+def cli(edition, username, password, download_dir):
+    if username == '' or password == '':
+        e_print('Please enter your credentials.')
+        exit(1)
 
     br = mechanize.Browser()
 
@@ -28,8 +32,8 @@ def cli(edition):
     print('Logging in...')
     br.open(LOGIN_URL)
     br.select_form(nr=0)
-    br.form['login'] = sz_credentials[0]
-    br.form['password'] = sz_credentials[1]
+    br.form['login'] = username
+    br.form['password'] = password
     br.submit()
 
     # look for current newspaper
@@ -50,9 +54,9 @@ def cli(edition):
     download_url = re.sub('/webreader/', DOWNLOAD_URL_PREFIX, download_link.url)
 
     # download pdf
-    print('Downloading "' + conf_utils.get_edition() + '" of the current newspaper from ' + download_url)
+    print('Downloading "' + edition + '" of the current newspaper from ' + download_url)
     file_path_regex = datetime.now().strftime(
-        conf_utils.get_download_path() + '/%Y_%m_%d_SZ-' + edition + '.pdf')
+        download_dir + '/%Y_%m_%d_SZ-' + edition + '.pdf')
     file_path = br.retrieve(download_url, file_path_regex)[0]
 
     br.close()
