@@ -19,7 +19,8 @@ setup(
     SZ2pdf=SZ2pdf:cli
     ''',
     install_requires=[
-        'mechanize>=0.4.5',
-        'appdirs>=1.4.4'
+        'mechanize~=0.4.5',
+        'appdirs~=1.4.4',
+        'click~=7.1.2'
     ]
 )

@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 
+import click
 import mechanize
 
 import conf_utils
@@ -8,12 +9,18 @@ from output_utils import e_print
 
 # URLs
 LOGIN_URL = 'https://epaper.sueddeutsche.de/login'
-E_PAPER_URL = 'https://epaper.sueddeutsche.de/' + conf_utils.get_edition()
+E_PAPER_URL = 'https://epaper.sueddeutsche.de/'
 DOWNLOAD_URL_PREFIX = 'https://epaper.sueddeutsche.de/download/'
 
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-def cli():
+
+@click.command(context_settings=CONTEXT_SETTINGS)
+@click.option('--edition', '-e', help='Specifies the edition to be downloaded.')
+def cli(edition):
     sz_credentials = conf_utils.get_sz_credentials()
+    if not edition:
+        edition = conf_utils.get_edition()
 
     br = mechanize.Browser()
 
@@ -27,9 +34,9 @@ def cli():
 
     # look for current newspaper
     try:
-        br.open(E_PAPER_URL)
+        br.open(E_PAPER_URL + edition)
     except mechanize.HTTPError:
-        e_print('Invalid edition. Please enter a valid edition at ' + conf_utils.CONFIG_FILE_PATH)
+        e_print('Invalid edition. Please enter a valid edition.')
         exit(1)
 
     download_link = None
@@ -45,7 +52,7 @@ def cli():
     # download pdf
     print('Downloading "' + conf_utils.get_edition() + '" of the current newspaper from ' + download_url)
     file_path_regex = datetime.now().strftime(
-        conf_utils.get_download_path() + '/%Y_%m_%d_SZ-' + conf_utils.get_edition() + '.pdf')
+        conf_utils.get_download_path() + '/%Y_%m_%d_SZ-' + edition + '.pdf')
     file_path = br.retrieve(download_url, file_path_regex)[0]
 
     br.close()
