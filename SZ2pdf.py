@@ -1,3 +1,4 @@
+import os
 import re
 from datetime import datetime
 
@@ -57,9 +58,9 @@ def cli(edition, username, password, download_dir):
 
     # download pdf
     print('Downloading "' + edition + '" of the current newspaper from ' + download_url)
-    file_path_regex = datetime.now().strftime(
-        click.format_filename(download_dir) + '/%Y_%m_%d_SZ-' + edition + '.pdf')
-    file_path = br.retrieve(download_url, file_path_regex)[0]
+    date_string = datetime.now().strftime('%Y-%m-%d_-_SZ-' + edition + '.pdf')
+    file = os.path.join(click.format_filename(download_dir), date_string)
+    file_path = br.retrieve(download_url, file)[0]
 
     br.close()
 
