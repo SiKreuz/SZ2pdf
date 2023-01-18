@@ -4,7 +4,7 @@ APP_NAME = 'SZ2pdf'
 
 setup(
     name=APP_NAME,
-    version='0.2.0',
+    version='0.2.1',
     py_modules=['SZ2pdf', 'conf_utils', 'output_utils'],
     url='https://github.com/SiKreuz/SZ2pdf',
     license='MIT',
