@@ -27,6 +27,7 @@ def cli(edition, username, password, download_dir):
         exit(1)
 
     br = mechanize.Browser()
+    br.set_handle_robots(False)
 
     # login
     print('Logging in...')
