@@ -55,3 +55,9 @@ Folgende Versionen der Zeitung können angegeben werden (bitte Großschreibung b
 - München Süd
 - Stadtausgabe (Standard)
 - Fernausgabe
+
+## Forks für andere Zeitungen
+
+Anscheinend nutzen andere Zeitungen das selbe Framework, weshalb hier Forks für andere Zeitungen aufgelistet sind.
+
+-   Frankfurter Rundschau: [FR2PDF](https://github.com/xorbital/FR2pdf) von [@xorbital](https://github.com/xorbital)
